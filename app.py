@@ -10,9 +10,9 @@ def load_data():
     counties = gpd.read_file("NC_Counties.geojson")
     #roads = gpd.read_file("NC_Roads.geojson")
 
-    return cities, counties, roads
+    return cities, counties #, roads
 
-cities_gdf, counties_gdf, roads_gdf = load_data()
+cities_gdf, counties_gdf = load_data() #, roads_gdf
 
 # Sidebar: City Selection & Census Info
 st.sidebar.header("City Selection")

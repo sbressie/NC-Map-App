@@ -8,7 +8,7 @@ st.set_page_config(layout="wide")
 def load_data():
     cities = gpd.read_file("NC_Cities.geojson")
     counties = gpd.read_file("NC_Counties.geojson")
-    roads = gpd.read_file("NC_Roads.geojson")
+    #roads = gpd.read_file("NC_Roads.geojson")
 
     return cities, counties, roads
 

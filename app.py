@@ -30,7 +30,7 @@ st.sidebar.write(f"**Census Year:** {city_info['CensusYear']}")
 st.title(f"NC Locator Map: {selected_city} in {city_info['CountyName']} County")
 
 # Define Layers
-# Counties styled in Light Pink
+# Counties styled in Pink!
 counties_layer = pdk.Layer(
     "GeoJsonLayer",
     counties_gdf,
@@ -43,7 +43,7 @@ roads_layer = pdk.Layer(
     "GeoJsonLayer",
     roads_gdf,
     get_line_color=[120, 120, 120],
-    line_width_min_pixels=0.5,
+    line_width_min_pixels=0.25,
 )
 
 city_highlight = pdk.Layer(

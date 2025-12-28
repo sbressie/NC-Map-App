@@ -15,8 +15,8 @@ def load_data():
 cities_gdf, counties_gdf, roads_gdf = load_data()
 
 # Sidebar: City Selection & Census Info
-st.sidebar.header("City Selection")
-selected_city = st.sidebar.selectbox("Select a City:", sorted(cities_gdf['MunicipalB'].unique()))
+st.sidebar.header("Town Selection")
+selected_city = st.sidebar.selectbox("Select a Town:", sorted(cities_gdf['MunicipalB'].unique()))
 
 # Retrieve specific data points for the selected city
 city_info = cities_gdf[cities_gdf['MunicipalB'] == selected_city].iloc[0]

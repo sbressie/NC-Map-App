@@ -34,7 +34,7 @@ st.title(f"NC Map: {selected_city} in {city_info['CountyName']} County")
 counties_layer = pdk.Layer(
     "GeoJsonLayer",
     counties_gdf,
-    get_fill_color=[255, 182, 193, 100],  # Light Pink (RGBA)
+    #get_fill_color=[255, 182, 193, 100],  # Light Pink (RGBA)
     get_line_color=[255, 105, 180],       # Hot Pink border
     line_width_min_pixels=1,
 )

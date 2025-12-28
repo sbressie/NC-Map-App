@@ -2,81 +2,70 @@ import streamlit as st
 import geopandas as gpd
 import pydeck as pdk
 
-st.set_page_config(layout="wide", page_title="NC City Map")
+st.set_page_config(layout="wide")
 
-# 1. Load and Clean Data
 @st.cache_data
 def load_data():
     cities = gpd.read_file("NC_Cities.geojson")
-    roads = gpd.read_file("NC_Roads.geojson")
     counties = gpd.read_file("NC_Counties.geojson")
+    roads = gpd.read_file("NC_Roads.geojson")
 
-    return cities, roads, counties
+    return cities, counties, roads
 
-cities_gdf, roads_gdf, counties_gdf = load_data()
+cities_gdf, counties_gdf, roads_gdf = load_data()
 
-# 2. Sidebar Logic
-st.sidebar.header("Map Controls")
-city_list = sorted(cities_gdf['MunicipalB'].unique())
-selected_city = st.sidebar.selectbox("Pick a City:", city_list)
+# Sidebar: City Selection & Census Info
+st.sidebar.header("City Selection")
+selected_city = st.sidebar.selectbox("Select a City:", sorted(cities_gdf['MunicipalB'].unique()))
 
-# 3. Report the County (Requirement)
-# Find the row for the selected city to get its county
-city_data = cities_gdf[cities_gdf['MunicipalB'] == selected_city].iloc[0]
-county_name = city_data['CountyName']
+# Retrieve specific data points for the selected city
+city_info = cities_gdf[cities_gdf['MunicipalB'] == selected_city].iloc[0]
 
-st.title(f"Exploring {selected_city}")
-st.success(f"📍 The city of **{selected_city}** is located in **{county_name} County**.")
+st.sidebar.subheader(f"Census Data for {selected_city}")
+st.sidebar.write(f"**Census Type:** {city_info['CensusType']}")
+st.sidebar.write(f"**Census Population:** {city_info['CensusPopu']:,}")
+st.sidebar.write(f"**Census Year:** {city_info['CensusYear']}")
 
-# 4. Define Pydeck Layers
-# Layer 1: Counties (Light outlines)
+# Map Layout
+st.title(f"NC Map: {selected_city} in {city_info['CountyName']} County")
+
+# Define Layers
+# Counties styled in Light Pink
 counties_layer = pdk.Layer(
     "GeoJsonLayer",
     counties_gdf,
-    get_fill_color=[0, 0, 0, 0], # Transparent fill
-    get_line_color=[150, 150, 150], # Grey borders
+    get_fill_color=[255, 182, 193, 100],  # Light Pink (RGBA)
+    get_line_color=[255, 105, 180],       # Hot Pink border
     line_width_min_pixels=1,
 )
 
-# Layer 2: Roads
 roads_layer = pdk.Layer(
     "GeoJsonLayer",
     roads_gdf,
-    get_line_color=[100, 100, 100, 150],
-    get_line_width=200, # Width in meters
+    get_line_color=[120, 120, 120],
     line_width_min_pixels=1,
 )
 
-# Layer 3: All Cities (Small grey dots)
-cities_layer = pdk.Layer(
-    "GeoJsonLayer",
-    cities_gdf,
-    get_fill_color=[200, 200, 200],
-    get_radius=1000,
-    point_radius_min_pixels=3,
-)
-
-# Layer 4: Selected City (Large blue highlight)
-highlight_layer = pdk.Layer(
+city_highlight = pdk.Layer(
     "GeoJsonLayer",
     cities_gdf[cities_gdf['MunicipalB'] == selected_city],
-    get_fill_color=[0, 128, 255],
-    get_radius=3000,
+    get_fill_color=[255, 0, 0],
+    get_radius=2000,
     point_radius_min_pixels=8,
 )
 
-# 5. Set the View & Render
-# Centers the map on the selected city's coordinates
+# Viewport centered on the selected city
 view_state = pdk.ViewState(
-    latitude=city_data.geometry.y,
-    longitude=city_data.geometry.x,
-    zoom=9,
+    latitude=city_info.geometry.y,
+    longitude=city_info.geometry.x,
+    zoom=10,
     pitch=0
 )
 
+# Render the Map
 st.pydeck_chart(pdk.Deck(
     map_style='mapbox://styles/mapbox/light-v9',
     initial_view_state=view_state,
-    layers=[counties_layer, roads_layer, cities_layer, highlight_layer],
-    tooltip={"text": "City: {MunicipalB}\nCounty: {CountyName}"}
+    layers=[counties_layer, roads_layer, city_highlight],
+    tooltip={"text": "City: {MunicipalB}\nCensus Pop: {CensusPopu}"}
 ))

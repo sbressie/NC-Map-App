@@ -3,3 +3,5 @@ geopandas
 keplergl
 streamlit-keplergl
 pyogrio
+fiona
+pyproj

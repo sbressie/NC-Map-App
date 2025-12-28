@@ -49,7 +49,7 @@ roads_layer = pdk.Layer(
 city_highlight = pdk.Layer(
     "GeoJsonLayer",
     cities_gdf[cities_gdf['MunicipalB'] == selected_city],
-    get_fill_color=[255, 0, 0],
+    get_fill_color=[0, 255, 255],
     get_radius=2000,
     point_radius_min_pixels=8,
 )

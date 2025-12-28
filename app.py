@@ -8,9 +8,10 @@ st.title("North Carolina Interactive Map")
 
 # Load the GeoJSON files using GeoPandas
 # Replace the paths with the actual paths to your files
-cities_gdf = gpd.read_file("NC_Cities.geojson")
-roads_gdf = gpd.read_file("NC_Roads.geojson")
-counties_gdf = gpd.read_file("NC_Counties.geojson")
+with st.spinner('Loading North Carolina Map Data...'):
+    cities_gdf = gpd.read_file("NC_Cities.geojson")
+    roads_gdf = gpd.read_file("NC_Roads.geojson")
+    counties_gdf = gpd.read_file("NC_Counties.geojson")
 
 # Sidebar for city selection
 st.sidebar.header("Navigation")
@@ -43,4 +44,6 @@ selected_city_gdf = cities_gdf[cities_gdf['MunicipalB'] == selected_city]
 m.add_gdf(selected_city_gdf, layer_name="Selected City", zoom_to_layer=True)
 
 # Display the map in the Streamlit app
-m.to_streamlit(height=700)
+from streamlit_folium import st_folium
+
+st_folium(m, width=700, height=500)

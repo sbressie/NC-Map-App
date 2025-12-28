@@ -27,7 +27,7 @@ st.sidebar.write(f"**Census Population:** {city_info['CensusPopu']:,}")
 st.sidebar.write(f"**Census Year:** {city_info['CensusYear']}")
 
 # Map Layout
-st.title(f"NC Map: {selected_city} in {city_info['CountyName']} County")
+st.title(f"NC Locator Map: {selected_city} in {city_info['CountyName']} County")
 
 # Define Layers
 # Counties styled in Light Pink

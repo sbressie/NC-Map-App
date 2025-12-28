@@ -2,11 +2,6 @@ import streamlit as st
 import geopandas as gpd
 import leafmap.foliumap as leafmap
 
-# Load files using relative paths
-cities_gdf = gpd.read_file("NC_Cities.geojson")
-roads_gdf = gpd.read_file("NC_Roads.geojson")
-counties_gdf = gpd.read_file("NC_Counties.geojson")
-
 # Set page configuration
 st.set_page_config(layout="wide")
 st.title("North Carolina Interactive Map")

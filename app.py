@@ -66,6 +66,6 @@ view_state = pdk.ViewState(
 st.pydeck_chart(pdk.Deck(
     map_style='mapbox://styles/mapbox/light-v9',
     initial_view_state=view_state,
-    layers=[counties_layer, roads_layer, city_highlight],
+    layers=[counties_layer, city_highlight], #, roads_layer
     tooltip={"text": "City: {MunicipalB}\nCensus Pop: {CensusPopu}"}
 ))

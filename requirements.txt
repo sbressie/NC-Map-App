@@ -1,7 +1,4 @@
 streamlit
 geopandas
-keplergl
-streamlit-keplergl
+pydeck
 pyogrio
-fiona
-pyproj

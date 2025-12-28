@@ -8,11 +8,11 @@ st.set_page_config(layout="wide")
 def load_data():
     cities = gpd.read_file("NC_Cities.geojson")
     counties = gpd.read_file("NC_Counties.geojson")
-    #roads = gpd.read_file("NC_Roads.geojson")
+    roads = gpd.read_file("NC_Roads.geojson")
+    
+    return cities, counties, roads
 
-    return cities, counties #, roads
-
-cities_gdf, counties_gdf = load_data() #, roads_gdf
+cities_gdf, counties_gdf, roads_gdf = load_data()
 
 # Sidebar: City Selection & Census Info
 st.sidebar.header("City Selection")
@@ -39,12 +39,12 @@ counties_layer = pdk.Layer(
     line_width_min_pixels=1,
 )
 
-#roads_layer = pdk.Layer(
- #   "GeoJsonLayer",
-  #  roads_gdf,
-   # get_line_color=[120, 120, 120],
-    #line_width_min_pixels=1,
-#)
+roads_layer = pdk.Layer(
+    "GeoJsonLayer",
+    roads_gdf,
+    get_line_color=[120, 120, 120],
+    line_width_min_pixels=1,
+)
 
 city_highlight = pdk.Layer(
     "GeoJsonLayer",
@@ -66,6 +66,6 @@ view_state = pdk.ViewState(
 st.pydeck_chart(pdk.Deck(
     map_style='mapbox://styles/mapbox/light-v9',
     initial_view_state=view_state,
-    layers=[counties_layer, city_highlight], #, roads_layer
+    layers=[counties_layer, roads_layer, city_highlight],
     tooltip={"text": "City: {MunicipalB}\nCensus Pop: {CensusPopu}"}
 ))

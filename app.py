@@ -1,51 +1,40 @@
 import streamlit as st
 import geopandas as gpd
-import leafmap.foliumap as leafmap
-from streamlit_folium import st_folium
+from keplergl import KeplerGl
+from streamlit_keplergl import keplergl_static
 
 st.set_page_config(layout="wide")
+st.title("North Carolina Kepler.gl Visualization")
 
-# Use caching so the app stays fast for your mom
 @st.cache_data
 def load_data():
-    # Loading files from your repo
+    # Loading your specific GeoJSON files
     cities = gpd.read_file("NC_Cities.geojson")
     roads = gpd.read_file("NC_Roads.geojson")
     counties = gpd.read_file("NC_Counties.geojson")
     
-    # Fix for common "Timestamp not JSON serializable" error
+    # Cleaning Timestamp columns (found in NC_Cities) for JSON compatibility
     for df in [cities, roads, counties]:
         for col in df.columns:
-            if df[col].dtype == 'datetime64[ns]':
+            if df[col].dtype == 'datetime64[ns]' or 'date' in col.lower():
                 df[col] = df[col].astype(str)
-                
+    
     return cities, roads, counties
 
 cities_gdf, roads_gdf, counties_gdf = load_data()
 
-st.title("North Carolina City Finder")
-
-# Sidebar for selection
-st.sidebar.header("Search Settings")
+# Requirement: Report the county for a selected city
 city_list = sorted(cities_gdf['MunicipalB'].unique())
 selected_city = st.sidebar.selectbox("Choose a City:", city_list)
+city_row = cities_gdf[cities_gdf['MunicipalB'] == selected_city].iloc[0]
+st.sidebar.write(f"**County:** {city_row['CountyName']}")
 
-# Requirement: Report the county for the picked city
-city_info = cities_gdf[cities_gdf['MunicipalB'] == selected_city].iloc[0]
-target_county = city_info['CountyName']
+# Create the Kepler.gl Map
+# We pass the data in a dictionary format
+map_1 = KeplerGl(height=600)
+map_1.add_data(data=counties_gdf, name="NC Counties")
+map_1.add_data(data=roads_gdf, name="NC Roads")
+map_1.add_data(data=cities_gdf[cities_gdf['MunicipalB'] == selected_city], name="Selected City")
 
-st.metric(label="Selected City's County", value=f"{target_county} County")
-
-# Create the Leafmap
-m = leafmap.Map(center=[35.5, -79.5], zoom=7)
-
-# Add the layers
-m.add_gdf(counties_gdf, layer_name="Counties", fill_colors=["none"], color="blue", weight=1)
-m.add_gdf(roads_gdf, layer_name="Roads", style={'color': 'gray', 'weight': 1})
-
-# Highlight only the selected city
-selected_city_gdf = cities_gdf[cities_gdf['MunicipalB'] == selected_city]
-m.add_gdf(selected_city_gdf, layer_name="Current Location")
-
-# Use st_folium instead of m.to_streamlit() for better stability
-st_folium(m, width=1200, height=600, returned_objects=[])
+# Display the map in Streamlit
+keplergl_static(map_1)

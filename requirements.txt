@@ -1,4 +1,6 @@
 streamlit
-leafmap
 geopandas
+leafmap
+folium
+streamlit-folium
 pyarrow

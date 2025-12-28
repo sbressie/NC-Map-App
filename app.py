@@ -11,6 +11,11 @@ def load_data():
     cities = gpd.read_file("NC_Cities.geojson")
     roads = gpd.read_file("NC_Roads.geojson")
     counties = gpd.read_file("NC_Counties.geojson")
+    # Convert Timestamp columns to strings to prevent JSON serialization errors
+    for col in cities.columns:
+        if cities[col].dtype == 'datetime64[ns]' or 'date' in col.lower():
+            cities[col] = cities[col].astype(str)
+    
     return cities, roads, counties
 
 cities_gdf, roads_gdf, counties_gdf = load_data()

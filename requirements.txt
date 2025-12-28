@@ -3,4 +3,4 @@ geopandas
 leafmap
 folium
 streamlit-folium
-pyarrow
+pyogrio

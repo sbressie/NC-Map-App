@@ -1,8 +1,5 @@
 streamlit
 geopandas
-leafmap
-folium
-streamlit-folium
-pyogrio
 keplergl
 streamlit-keplergl
+pyogrio

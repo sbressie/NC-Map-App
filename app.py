@@ -43,7 +43,7 @@ roads_layer = pdk.Layer(
     "GeoJsonLayer",
     roads_gdf,
     get_line_color=[120, 120, 120],
-    line_width_min_pixels=0.25,
+    line_width_min_pixels=0.5,
 )
 
 city_highlight = pdk.Layer(
@@ -51,7 +51,7 @@ city_highlight = pdk.Layer(
     cities_gdf[cities_gdf['MunicipalB'] == selected_city],
     get_fill_color=[0, 255, 255],
     get_radius=2000,
-    point_radius_min_pixels=8,
+    point_radius_min_pixels=10,
 )
 
 # Viewport centered on the selected city
